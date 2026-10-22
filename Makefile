@@ -30,6 +30,7 @@ INSTALL  ?= install
 CANON_DIR  := data/canon
 CANON_DATA := $(addprefix $(CANON_DIR)/,cnb_3700.tbl cnbpname370.tbl cifmp280.conf)
 
+.DEFAULT_GOAL := all
 .PHONY: all fetch test perf vet test-cross install uninstall clean
 
 fetch $(CANON_DATA):
