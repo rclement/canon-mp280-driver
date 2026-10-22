@@ -1,0 +1,5 @@
+/build/
+# Canon's files are downloaded by scripts/fetch-canon-data.sh, never committed.
+/data/canon/*
+!/data/canon/README
+!/data/canon/SHA256SUMS

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<cmd xmlns:ivec="http://www.canon.com/ns/cmd/2008/07/common/"
+xmlns:cijn="http://www.canon.com/ns/wdp/2008/01/print/">
+	<ivec:contents>
+		<ivec:operation>GetStatusResponse</ivec:operation>
+		<ivec:param_set servicetype="print">
+			<ivec:response>OK</ivec:response>
+			<ivec:response_detail/>
+			<ivec:status>idle</ivec:status>
+			<ivec:status_detail/>
+			<cijn:IJPrinterStatus>
+				<cijn:Name>BSCCe</cijn:Name>
+				<cijn:ReadData>BST:00;PID:00,00,00;CHD:CLM,BKM;LVR:GAL,AT;MID:XXXXXX;CTK:CL,SET,/,BK,LLOW;CIR:CL=040,BK=010;DJS:NO;DBS:NO;DWS:1499;DOC:4,00,NO;DSC:NO;FSI:00;HRI:EU;HCF:AL;MSI:DAT,E3,HASF;PDR:4;HRC:NO;</cijn:ReadData>
+				<cijn:NumberOfBytes>185</cijn:NumberOfBytes>
+			</cijn:IJPrinterStatus>
+		</ivec:param_set>
+	</ivec:contents>
+</cmd>

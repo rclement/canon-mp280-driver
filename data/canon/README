@@ -1,0 +1,21 @@
+Canon data files
+================
+
+The driver needs three data files from Canon's cnijfilter 3.40 source package
+(cnijfilter-source-3.40-1.tar.gz, files 370/database/*):
+
+    cnb_3700.tbl      colour, halftone and tone tables
+    cnbpname370.tbl   option names
+    cifmp280.conf     option word to id mapping
+
+They are Canon Inc.'s proprietary property and are NOT part of this repository
+nor covered by its GPL licence. `make` downloads them into this directory with
+scripts/fetch-canon-data.sh and checks them against SHA256SUMS; the licence texts
+(LICENSE-cnijfilter-3.40*.txt) come from the same archive. Use of the files is
+governed by Canon's "Agreement for the software modules proprietary to Canon or
+its licensor" in those texts, which you accept by downloading them. The files
+are only read at run time and are never compiled into the programs.
+
+To use a copy of the archive you already have:
+
+    CANON_TARBALL=/path/to/cnijfilter-source-3.40-1.tar.gz make

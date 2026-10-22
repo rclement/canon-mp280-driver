@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<cmd xmlns:ivec="http://www.canon.com/ns/cmd/2008/07/common/"
+xmlns:vcn="http://www.canon.com/ns/cmd/2008/07/canon/">
+	<ivec:contents>
+		<ivec:operation>VendorCmdResponse</ivec:operation>
+		<ivec:param_set servicetype="print">
+			<ivec:response>OK</ivec:response>
+			<ivec:response_detail/>
+			<ivec:jobID>00000001</ivec:jobID>
+			<vcn:ijoperation>ModeShiftResponse</vcn:ijoperation>
+				<vcn:ijmode>1</vcn:ijmode>
+			<vcn:ijresponse>OK</vcn:ijresponse>
+			<vcn:ijresponse_detail/>
+		</ivec:param_set>
+	</ivec:contents>
+</cmd>

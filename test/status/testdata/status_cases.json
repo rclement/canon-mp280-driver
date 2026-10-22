@@ -1,0 +1,958 @@
+{
+ "format": 1,
+ "description": "Input: the XML document (a GetStatusResponse as read from the bulk-in endpoint). Expected: the decoded BSCC fields, the supply report, and the exact stderr lines of the CUPS backend (ATTR line, then all STATE lines in this order). origin=real: reply of a real MP280; origin=synthetic: built from the documented code tables, never observed on hardware.",
+ "cases": [
+  {
+   "name": "idle",
+   "origin": "real",
+   "note": "REAL: reply of a real MP280 (idle, both cartridges full), serial anonymised",
+   "xml": "cases/idle.xml",
+   "xml_status_element": "idle",
+   "bscc": "BST:00;PID:00,00,00;CHD:CLM,BKM;LVR:GAL,AT;MID:XXXXXX;CTK:CL,SET,/,BK,SET;CIR:CL=100,BK=100;DJS:NO;DBS:NO;DWS:NO;DOC:4,00,NO;DSC:NO;FSI:00;HRI:EU;HCF:AL;MSI:DAT,E3,HASF;PDR:4;HRC:NO;",
+   "decoded": {
+    "region": "EU",
+    "bst": "00",
+    "busy_state": "NO",
+    "job_state": "NO",
+    "cartridges": [
+     "CLM",
+     "BKM"
+    ],
+    "ink": [
+     {
+      "color": "CL",
+      "fill": "100",
+      "tank": "SET"
+     },
+     {
+      "color": "BK",
+      "fill": "100",
+      "tank": "SET"
+     }
+    ],
+    "warnings": [
+     "NO"
+    ],
+    "operator_calls": [
+     "NO"
+    ],
+    "service_call": "NO"
+   },
+   "report": {
+    "activity": "idle",
+    "levels": [
+     100,
+     100
+    ],
+    "names": [
+     "Black PG-510",
+     "Tri-colour CL-511"
+    ],
+    "reasons": [],
+    "message": ""
+   },
+   "attr": "ATTR: marker-colors=#000000,#00AEEF marker-high-levels=100,100 marker-levels=100,100 marker-low-levels=10,10 marker-message=\"\" marker-names=\"Black PG-510,Tri-colour CL-511\" marker-types=ink,ink",
+   "state": [
+    "STATE: -marker-supply-low-warning",
+    "STATE: -marker-supply-empty-error",
+    "STATE: -media-empty-error",
+    "STATE: -cover-open-error",
+    "STATE: -media-jam-error",
+    "STATE: -marker-waste-almost-full-warning",
+    "STATE: -marker-waste-full-error",
+    "STATE: -output-tray-missing-error",
+    "STATE: -other-error"
+   ]
+  },
+  {
+   "name": "low_ink_colour",
+   "origin": "synthetic",
+   "note": "SYNTHETIC: colour tank low (CTK LOW, DWS 1500, level step 010); codes from Canon's tables, never seen on hardware",
+   "xml": "cases/low_ink_colour.xml",
+   "xml_status_element": "idle",
+   "bscc": "BST:00;PID:00,00,00;CHD:CLM,BKM;LVR:GAL,AT;MID:XXXXXX;CTK:CL,LOW,/,BK,SET;CIR:CL=010,BK=070;DJS:NO;DBS:NO;DWS:1500;DOC:4,00,NO;DSC:NO;FSI:00;HRI:EU;HCF:AL;MSI:DAT,E3,HASF;PDR:4;HRC:NO;",
+   "decoded": {
+    "region": "EU",
+    "bst": "00",
+    "busy_state": "NO",
+    "job_state": "NO",
+    "cartridges": [
+     "CLM",
+     "BKM"
+    ],
+    "ink": [
+     {
+      "color": "CL",
+      "fill": "010",
+      "tank": "LOW"
+     },
+     {
+      "color": "BK",
+      "fill": "070",
+      "tank": "SET"
+     }
+    ],
+    "warnings": [
+     "1500"
+    ],
+    "operator_calls": [
+     "NO"
+    ],
+    "service_call": "NO"
+   },
+   "report": {
+    "activity": "idle",
+    "levels": [
+     70,
+     10
+    ],
+    "names": [
+     "Black PG-510",
+     "Tri-colour CL-511"
+    ],
+    "reasons": [
+     "marker-supply-low-warning"
+    ],
+    "message": "Tri-colour CL-511 is low"
+   },
+   "attr": "ATTR: marker-colors=#000000,#00AEEF marker-high-levels=100,100 marker-levels=70,10 marker-low-levels=10,10 marker-message=\"Tri-colour CL-511 is low\" marker-names=\"Black PG-510,Tri-colour CL-511\" marker-types=ink,ink",
+   "state": [
+    "STATE: +marker-supply-low-warning",
+    "STATE: -marker-supply-empty-error",
+    "STATE: -media-empty-error",
+    "STATE: -cover-open-error",
+    "STATE: -media-jam-error",
+    "STATE: -marker-waste-almost-full-warning",
+    "STATE: -marker-waste-full-error",
+    "STATE: -output-tray-missing-error",
+    "STATE: -other-error"
+   ]
+  },
+  {
+   "name": "low_ink_black_first_warning",
+   "origin": "synthetic",
+   "note": "SYNTHETIC: black tank first low warning (CTK LLOW, DWS 1499)",
+   "xml": "cases/low_ink_black_first_warning.xml",
+   "xml_status_element": "idle",
+   "bscc": "BST:00;PID:00,00,00;CHD:CLM,BKM;LVR:GAL,AT;MID:XXXXXX;CTK:CL,SET,/,BK,LLOW;CIR:CL=040,BK=010;DJS:NO;DBS:NO;DWS:1499;DOC:4,00,NO;DSC:NO;FSI:00;HRI:EU;HCF:AL;MSI:DAT,E3,HASF;PDR:4;HRC:NO;",
+   "decoded": {
+    "region": "EU",
+    "bst": "00",
+    "busy_state": "NO",
+    "job_state": "NO",
+    "cartridges": [
+     "CLM",
+     "BKM"
+    ],
+    "ink": [
+     {
+      "color": "CL",
+      "fill": "040",
+      "tank": "SET"
+     },
+     {
+      "color": "BK",
+      "fill": "010",
+      "tank": "LLOW"
+     }
+    ],
+    "warnings": [
+     "1499"
+    ],
+    "operator_calls": [
+     "NO"
+    ],
+    "service_call": "NO"
+   },
+   "report": {
+    "activity": "idle",
+    "levels": [
+     10,
+     40
+    ],
+    "names": [
+     "Black PG-510",
+     "Tri-colour CL-511"
+    ],
+    "reasons": [
+     "marker-supply-low-warning"
+    ],
+    "message": "Black PG-510 is low"
+   },
+   "attr": "ATTR: marker-colors=#000000,#00AEEF marker-high-levels=100,100 marker-levels=10,40 marker-low-levels=10,10 marker-message=\"Black PG-510 is low\" marker-names=\"Black PG-510,Tri-colour CL-511\" marker-types=ink,ink",
+   "state": [
+    "STATE: +marker-supply-low-warning",
+    "STATE: -marker-supply-empty-error",
+    "STATE: -media-empty-error",
+    "STATE: -cover-open-error",
+    "STATE: -media-jam-error",
+    "STATE: -marker-waste-almost-full-warning",
+    "STATE: -marker-waste-full-error",
+    "STATE: -output-tray-missing-error",
+    "STATE: -other-error"
+   ]
+  },
+  {
+   "name": "empty_black",
+   "origin": "synthetic",
+   "note": "SYNTHETIC: black ink out (DOC 1688, CTK EMP, operator-call bit in BST)",
+   "xml": "cases/empty_black.xml",
+   "xml_status_element": "idle",
+   "bscc": "BST:08;PID:00,00,00;CHD:CLM,BKM;LVR:GAL,AT;MID:XXXXXX;CTK:CL,SET,/,BK,EMP;CIR:CL=070,BK=000;DJS:NO;DBS:NO;DWS:NO;DOC:4,01,1688;DSC:NO;FSI:00;HRI:EU;HCF:AL;MSI:DAT,E3,HASF;PDR:4;HRC:NO;",
+   "decoded": {
+    "region": "EU",
+    "bst": "08",
+    "busy_state": "NO",
+    "job_state": "NO",
+    "cartridges": [
+     "CLM",
+     "BKM"
+    ],
+    "ink": [
+     {
+      "color": "CL",
+      "fill": "070",
+      "tank": "SET"
+     },
+     {
+      "color": "BK",
+      "fill": "000",
+      "tank": "EMP"
+     }
+    ],
+    "warnings": [
+     "NO"
+    ],
+    "operator_calls": [
+     "1688"
+    ],
+    "service_call": "NO"
+   },
+   "report": {
+    "activity": "idle",
+    "levels": [
+     0,
+     70
+    ],
+    "names": [
+     "Black PG-510",
+     "Tri-colour CL-511"
+    ],
+    "reasons": [
+     "marker-supply-empty-error"
+    ],
+    "message": "Black PG-510 is empty"
+   },
+   "attr": "ATTR: marker-colors=#000000,#00AEEF marker-high-levels=100,100 marker-levels=0,70 marker-low-levels=10,10 marker-message=\"Black PG-510 is empty\" marker-names=\"Black PG-510,Tri-colour CL-511\" marker-types=ink,ink",
+   "state": [
+    "STATE: +marker-supply-empty-error",
+    "STATE: -marker-supply-low-warning",
+    "STATE: -media-empty-error",
+    "STATE: -cover-open-error",
+    "STATE: -media-jam-error",
+    "STATE: -marker-waste-almost-full-warning",
+    "STATE: -marker-waste-full-error",
+    "STATE: -output-tray-missing-error",
+    "STATE: -other-error"
+   ]
+  },
+  {
+   "name": "cartridge_missing_black",
+   "origin": "synthetic",
+   "note": "SYNTHETIC: black cartridge absent (CHD NO, CTK NO, DOC 1401)",
+   "xml": "cases/cartridge_missing_black.xml",
+   "xml_status_element": "idle",
+   "bscc": "BST:08;PID:00,00,00;CHD:CLM,NO;LVR:GAL,AT;MID:XXXXXX;CTK:CL,SET,/,BK,NO;CIR:CL=100,BK=UK;DJS:NO;DBS:NO;DWS:NO;DOC:4,01,1401;DSC:NO;FSI:00;HRI:EU;HCF:AL;MSI:DAT,E3,HASF;PDR:4;HRC:NO;",
+   "decoded": {
+    "region": "EU",
+    "bst": "08",
+    "busy_state": "NO",
+    "job_state": "NO",
+    "cartridges": [
+     "CLM",
+     "NO"
+    ],
+    "ink": [
+     {
+      "color": "CL",
+      "fill": "100",
+      "tank": "SET"
+     },
+     {
+      "color": "BK",
+      "fill": "UK",
+      "tank": "NO"
+     }
+    ],
+    "warnings": [
+     "NO"
+    ],
+    "operator_calls": [
+     "1401"
+    ],
+    "service_call": "NO"
+   },
+   "report": {
+    "activity": "idle",
+    "levels": [
+     -1,
+     100
+    ],
+    "names": [
+     "Black",
+     "Tri-colour CL-511"
+    ],
+    "reasons": [
+     "other-error"
+    ],
+    "message": "Black is missing or not recognised"
+   },
+   "attr": "ATTR: marker-colors=#000000,#00AEEF marker-high-levels=100,100 marker-levels=-1,100 marker-low-levels=10,10 marker-message=\"Black is missing or not recognised\" marker-names=\"Black,Tri-colour CL-511\" marker-types=ink,ink",
+   "state": [
+    "STATE: +other-error",
+    "STATE: -marker-supply-low-warning",
+    "STATE: -marker-supply-empty-error",
+    "STATE: -media-empty-error",
+    "STATE: -cover-open-error",
+    "STATE: -media-jam-error",
+    "STATE: -marker-waste-almost-full-warning",
+    "STATE: -marker-waste-full-error",
+    "STATE: -output-tray-missing-error"
+   ]
+  },
+  {
+   "name": "cover_open",
+   "origin": "synthetic",
+   "note": "SYNTHETIC: cover open (DOC 1200)",
+   "xml": "cases/cover_open.xml",
+   "xml_status_element": "idle",
+   "bscc": "BST:08;PID:00,00,00;CHD:CLM,BKM;LVR:GAL,AT;MID:XXXXXX;CTK:CL,SET,/,BK,SET;CIR:CL=100,BK=100;DJS:NO;DBS:NO;DWS:NO;DOC:4,01,1200;DSC:NO;FSI:00;HRI:EU;HCF:AL;MSI:DAT,E3,HASF;PDR:4;HRC:NO;",
+   "decoded": {
+    "region": "EU",
+    "bst": "08",
+    "busy_state": "NO",
+    "job_state": "NO",
+    "cartridges": [
+     "CLM",
+     "BKM"
+    ],
+    "ink": [
+     {
+      "color": "CL",
+      "fill": "100",
+      "tank": "SET"
+     },
+     {
+      "color": "BK",
+      "fill": "100",
+      "tank": "SET"
+     }
+    ],
+    "warnings": [
+     "NO"
+    ],
+    "operator_calls": [
+     "1200"
+    ],
+    "service_call": "NO"
+   },
+   "report": {
+    "activity": "idle",
+    "levels": [
+     100,
+     100
+    ],
+    "names": [
+     "Black PG-510",
+     "Tri-colour CL-511"
+    ],
+    "reasons": [
+     "cover-open-error"
+    ],
+    "message": "Cover open"
+   },
+   "attr": "ATTR: marker-colors=#000000,#00AEEF marker-high-levels=100,100 marker-levels=100,100 marker-low-levels=10,10 marker-message=\"Cover open\" marker-names=\"Black PG-510,Tri-colour CL-511\" marker-types=ink,ink",
+   "state": [
+    "STATE: +cover-open-error",
+    "STATE: -marker-supply-low-warning",
+    "STATE: -marker-supply-empty-error",
+    "STATE: -media-empty-error",
+    "STATE: -media-jam-error",
+    "STATE: -marker-waste-almost-full-warning",
+    "STATE: -marker-waste-full-error",
+    "STATE: -output-tray-missing-error",
+    "STATE: -other-error"
+   ]
+  },
+  {
+   "name": "paper_out",
+   "origin": "synthetic",
+   "note": "SYNTHETIC: no paper (DOC 1000)",
+   "xml": "cases/paper_out.xml",
+   "xml_status_element": "idle",
+   "bscc": "BST:08;PID:00,00,00;CHD:CLM,BKM;LVR:GAL,AT;MID:XXXXXX;CTK:CL,SET,/,BK,SET;CIR:CL=070,BK=100;DJS:NO;DBS:NO;DWS:NO;DOC:4,01,1000;DSC:NO;FSI:00;HRI:EU;HCF:AL;MSI:DAT,E3,HASF;PDR:4;HRC:NO;",
+   "decoded": {
+    "region": "EU",
+    "bst": "08",
+    "busy_state": "NO",
+    "job_state": "NO",
+    "cartridges": [
+     "CLM",
+     "BKM"
+    ],
+    "ink": [
+     {
+      "color": "CL",
+      "fill": "070",
+      "tank": "SET"
+     },
+     {
+      "color": "BK",
+      "fill": "100",
+      "tank": "SET"
+     }
+    ],
+    "warnings": [
+     "NO"
+    ],
+    "operator_calls": [
+     "1000"
+    ],
+    "service_call": "NO"
+   },
+   "report": {
+    "activity": "idle",
+    "levels": [
+     100,
+     70
+    ],
+    "names": [
+     "Black PG-510",
+     "Tri-colour CL-511"
+    ],
+    "reasons": [
+     "media-empty-error"
+    ],
+    "message": "Out of paper"
+   },
+   "attr": "ATTR: marker-colors=#000000,#00AEEF marker-high-levels=100,100 marker-levels=100,70 marker-low-levels=10,10 marker-message=\"Out of paper\" marker-names=\"Black PG-510,Tri-colour CL-511\" marker-types=ink,ink",
+   "state": [
+    "STATE: +media-empty-error",
+    "STATE: -marker-supply-low-warning",
+    "STATE: -marker-supply-empty-error",
+    "STATE: -cover-open-error",
+    "STATE: -media-jam-error",
+    "STATE: -marker-waste-almost-full-warning",
+    "STATE: -marker-waste-full-error",
+    "STATE: -output-tray-missing-error",
+    "STATE: -other-error"
+   ]
+  },
+  {
+   "name": "paper_jam",
+   "origin": "synthetic",
+   "note": "SYNTHETIC: paper jam (DOC 1300)",
+   "xml": "cases/paper_jam.xml",
+   "xml_status_element": "idle",
+   "bscc": "BST:08;PID:00,00,00;CHD:CLM,BKM;LVR:GAL,AT;MID:XXXXXX;CTK:CL,SET,/,BK,SET;CIR:CL=070,BK=100;DJS:NO;DBS:NO;DWS:NO;DOC:4,01,1300;DSC:NO;FSI:00;HRI:EU;HCF:AL;MSI:DAT,E3,HASF;PDR:4;HRC:NO;",
+   "decoded": {
+    "region": "EU",
+    "bst": "08",
+    "busy_state": "NO",
+    "job_state": "NO",
+    "cartridges": [
+     "CLM",
+     "BKM"
+    ],
+    "ink": [
+     {
+      "color": "CL",
+      "fill": "070",
+      "tank": "SET"
+     },
+     {
+      "color": "BK",
+      "fill": "100",
+      "tank": "SET"
+     }
+    ],
+    "warnings": [
+     "NO"
+    ],
+    "operator_calls": [
+     "1300"
+    ],
+    "service_call": "NO"
+   },
+   "report": {
+    "activity": "idle",
+    "levels": [
+     100,
+     70
+    ],
+    "names": [
+     "Black PG-510",
+     "Tri-colour CL-511"
+    ],
+    "reasons": [
+     "media-jam-error"
+    ],
+    "message": "Paper jam"
+   },
+   "attr": "ATTR: marker-colors=#000000,#00AEEF marker-high-levels=100,100 marker-levels=100,70 marker-low-levels=10,10 marker-message=\"Paper jam\" marker-names=\"Black PG-510,Tri-colour CL-511\" marker-types=ink,ink",
+   "state": [
+    "STATE: +media-jam-error",
+    "STATE: -marker-supply-low-warning",
+    "STATE: -marker-supply-empty-error",
+    "STATE: -media-empty-error",
+    "STATE: -cover-open-error",
+    "STATE: -marker-waste-almost-full-warning",
+    "STATE: -marker-waste-full-error",
+    "STATE: -output-tray-missing-error",
+    "STATE: -other-error"
+   ]
+  },
+  {
+   "name": "printing",
+   "origin": "synthetic",
+   "note": "SYNTHETIC: printing a page (BST bit 0x80, DJS PR)",
+   "xml": "cases/printing.xml",
+   "xml_status_element": "processing",
+   "bscc": "BST:80;PID:00,00,00;CHD:CLM,BKM;LVR:GAL,AT;MID:XXXXXX;CTK:CL,SET,/,BK,SET;CIR:CL=070,BK=100;DJS:PR;DBS:NO;DWS:NO;DOC:4,00,NO;DSC:NO;FSI:00;HRI:EU;HCF:AL;MSI:DAT,E3,HASF;PDR:4;HRC:NO;",
+   "decoded": {
+    "region": "EU",
+    "bst": "80",
+    "busy_state": "NO",
+    "job_state": "PR",
+    "cartridges": [
+     "CLM",
+     "BKM"
+    ],
+    "ink": [
+     {
+      "color": "CL",
+      "fill": "070",
+      "tank": "SET"
+     },
+     {
+      "color": "BK",
+      "fill": "100",
+      "tank": "SET"
+     }
+    ],
+    "warnings": [
+     "NO"
+    ],
+    "operator_calls": [
+     "NO"
+    ],
+    "service_call": "NO"
+   },
+   "report": {
+    "activity": "printing",
+    "levels": [
+     100,
+     70
+    ],
+    "names": [
+     "Black PG-510",
+     "Tri-colour CL-511"
+    ],
+    "reasons": [],
+    "message": ""
+   },
+   "attr": "ATTR: marker-colors=#000000,#00AEEF marker-high-levels=100,100 marker-levels=100,70 marker-low-levels=10,10 marker-message=\"\" marker-names=\"Black PG-510,Tri-colour CL-511\" marker-types=ink,ink",
+   "state": [
+    "STATE: -marker-supply-low-warning",
+    "STATE: -marker-supply-empty-error",
+    "STATE: -media-empty-error",
+    "STATE: -cover-open-error",
+    "STATE: -media-jam-error",
+    "STATE: -marker-waste-almost-full-warning",
+    "STATE: -marker-waste-full-error",
+    "STATE: -output-tray-missing-error",
+    "STATE: -other-error"
+   ]
+  },
+  {
+   "name": "cleaning",
+   "origin": "synthetic",
+   "note": "SYNTHETIC: head cleaning (BST bit 0x20, DBS CL)",
+   "xml": "cases/cleaning.xml",
+   "xml_status_element": "idle",
+   "bscc": "BST:20;PID:00,00,00;CHD:CLM,BKM;LVR:GAL,AT;MID:XXXXXX;CTK:CL,SET,/,BK,SET;CIR:CL=070,BK=100;DJS:NO;DBS:CL;DWS:NO;DOC:4,00,NO;DSC:NO;FSI:00;HRI:EU;HCF:AL;MSI:DAT,E3,HASF;PDR:4;HRC:NO;",
+   "decoded": {
+    "region": "EU",
+    "bst": "20",
+    "busy_state": "CL",
+    "job_state": "NO",
+    "cartridges": [
+     "CLM",
+     "BKM"
+    ],
+    "ink": [
+     {
+      "color": "CL",
+      "fill": "070",
+      "tank": "SET"
+     },
+     {
+      "color": "BK",
+      "fill": "100",
+      "tank": "SET"
+     }
+    ],
+    "warnings": [
+     "NO"
+    ],
+    "operator_calls": [
+     "NO"
+    ],
+    "service_call": "NO"
+   },
+   "report": {
+    "activity": "busy",
+    "levels": [
+     100,
+     70
+    ],
+    "names": [
+     "Black PG-510",
+     "Tri-colour CL-511"
+    ],
+    "reasons": [],
+    "message": ""
+   },
+   "attr": "ATTR: marker-colors=#000000,#00AEEF marker-high-levels=100,100 marker-levels=100,70 marker-low-levels=10,10 marker-message=\"\" marker-names=\"Black PG-510,Tri-colour CL-511\" marker-types=ink,ink",
+   "state": [
+    "STATE: -marker-supply-low-warning",
+    "STATE: -marker-supply-empty-error",
+    "STATE: -media-empty-error",
+    "STATE: -cover-open-error",
+    "STATE: -media-jam-error",
+    "STATE: -marker-waste-almost-full-warning",
+    "STATE: -marker-waste-full-error",
+    "STATE: -output-tray-missing-error",
+    "STATE: -other-error"
+   ]
+  },
+  {
+   "name": "waste_almost_full",
+   "origin": "synthetic",
+   "note": "SYNTHETIC: ink absorber almost full (DOC 1700)",
+   "xml": "cases/waste_almost_full.xml",
+   "xml_status_element": "idle",
+   "bscc": "BST:08;PID:00,00,00;CHD:CLM,BKM;LVR:GAL,AT;MID:XXXXXX;CTK:CL,SET,/,BK,SET;CIR:CL=040,BK=040;DJS:NO;DBS:NO;DWS:NO;DOC:4,01,1700;DSC:NO;FSI:00;HRI:EU;HCF:AL;MSI:DAT,E3,HASF;PDR:4;HRC:NO;",
+   "decoded": {
+    "region": "EU",
+    "bst": "08",
+    "busy_state": "NO",
+    "job_state": "NO",
+    "cartridges": [
+     "CLM",
+     "BKM"
+    ],
+    "ink": [
+     {
+      "color": "CL",
+      "fill": "040",
+      "tank": "SET"
+     },
+     {
+      "color": "BK",
+      "fill": "040",
+      "tank": "SET"
+     }
+    ],
+    "warnings": [
+     "NO"
+    ],
+    "operator_calls": [
+     "1700"
+    ],
+    "service_call": "NO"
+   },
+   "report": {
+    "activity": "idle",
+    "levels": [
+     40,
+     40
+    ],
+    "names": [
+     "Black PG-510",
+     "Tri-colour CL-511"
+    ],
+    "reasons": [
+     "marker-waste-almost-full-warning"
+    ],
+    "message": "Ink absorber almost full"
+   },
+   "attr": "ATTR: marker-colors=#000000,#00AEEF marker-high-levels=100,100 marker-levels=40,40 marker-low-levels=10,10 marker-message=\"Ink absorber almost full\" marker-names=\"Black PG-510,Tri-colour CL-511\" marker-types=ink,ink",
+   "state": [
+    "STATE: +marker-waste-almost-full-warning",
+    "STATE: -marker-supply-low-warning",
+    "STATE: -marker-supply-empty-error",
+    "STATE: -media-empty-error",
+    "STATE: -cover-open-error",
+    "STATE: -media-jam-error",
+    "STATE: -marker-waste-full-error",
+    "STATE: -output-tray-missing-error",
+    "STATE: -other-error"
+   ]
+  },
+  {
+   "name": "service_call",
+   "origin": "synthetic",
+   "note": "SYNTHETIC: unrecoverable error (DSC 5100)",
+   "xml": "cases/service_call.xml",
+   "xml_status_element": "idle",
+   "bscc": "BST:08;PID:00,00,00;CHD:CLM,BKM;LVR:GAL,AT;MID:XXXXXX;CTK:CL,SET,/,BK,SET;CIR:CL=040,BK=040;DJS:NO;DBS:NO;DWS:NO;DOC:4,00,NO;DSC:5100;FSI:00;HRI:EU;HCF:AL;MSI:DAT,E3,HASF;PDR:4;HRC:NO;",
+   "decoded": {
+    "region": "EU",
+    "bst": "08",
+    "busy_state": "NO",
+    "job_state": "NO",
+    "cartridges": [
+     "CLM",
+     "BKM"
+    ],
+    "ink": [
+     {
+      "color": "CL",
+      "fill": "040",
+      "tank": "SET"
+     },
+     {
+      "color": "BK",
+      "fill": "040",
+      "tank": "SET"
+     }
+    ],
+    "warnings": [
+     "NO"
+    ],
+    "operator_calls": [
+     "NO"
+    ],
+    "service_call": "5100"
+   },
+   "report": {
+    "activity": "idle",
+    "levels": [
+     40,
+     40
+    ],
+    "names": [
+     "Black PG-510",
+     "Tri-colour CL-511"
+    ],
+    "reasons": [
+     "other-error"
+    ],
+    "message": "Printer service error"
+   },
+   "attr": "ATTR: marker-colors=#000000,#00AEEF marker-high-levels=100,100 marker-levels=40,40 marker-low-levels=10,10 marker-message=\"Printer service error\" marker-names=\"Black PG-510,Tri-colour CL-511\" marker-types=ink,ink",
+   "state": [
+    "STATE: +other-error",
+    "STATE: -marker-supply-low-warning",
+    "STATE: -marker-supply-empty-error",
+    "STATE: -media-empty-error",
+    "STATE: -cover-open-error",
+    "STATE: -media-jam-error",
+    "STATE: -marker-waste-almost-full-warning",
+    "STATE: -marker-waste-full-error",
+    "STATE: -output-tray-missing-error"
+   ]
+  },
+  {
+   "name": "multi_operator_call",
+   "origin": "synthetic",
+   "note": "SYNTHETIC: two operator calls at once (paper out and cover open), second group after a / token",
+   "xml": "cases/multi_operator_call.xml",
+   "xml_status_element": "idle",
+   "bscc": "BST:08;PID:00,00,00;CHD:CLM,BKM;LVR:GAL,AT;MID:XXXXXX;CTK:CL,SET,/,BK,SET;CIR:CL=040,BK=040;DJS:NO;DBS:NO;DWS:NO;DOC:4,01,1000,/,4,01,1200;DSC:NO;FSI:00;HRI:EU;HCF:AL;MSI:DAT,E3,HASF;PDR:4;HRC:NO;",
+   "decoded": {
+    "region": "EU",
+    "bst": "08",
+    "busy_state": "NO",
+    "job_state": "NO",
+    "cartridges": [
+     "CLM",
+     "BKM"
+    ],
+    "ink": [
+     {
+      "color": "CL",
+      "fill": "040",
+      "tank": "SET"
+     },
+     {
+      "color": "BK",
+      "fill": "040",
+      "tank": "SET"
+     }
+    ],
+    "warnings": [
+     "NO"
+    ],
+    "operator_calls": [
+     "1000",
+     "1200"
+    ],
+    "service_call": "NO"
+   },
+   "report": {
+    "activity": "idle",
+    "levels": [
+     40,
+     40
+    ],
+    "names": [
+     "Black PG-510",
+     "Tri-colour CL-511"
+    ],
+    "reasons": [
+     "media-empty-error",
+     "cover-open-error"
+    ],
+    "message": "Out of paper; Cover open"
+   },
+   "attr": "ATTR: marker-colors=#000000,#00AEEF marker-high-levels=100,100 marker-levels=40,40 marker-low-levels=10,10 marker-message=\"Out of paper; Cover open\" marker-names=\"Black PG-510,Tri-colour CL-511\" marker-types=ink,ink",
+   "state": [
+    "STATE: +media-empty-error",
+    "STATE: +cover-open-error",
+    "STATE: -marker-supply-low-warning",
+    "STATE: -marker-supply-empty-error",
+    "STATE: -media-jam-error",
+    "STATE: -marker-waste-almost-full-warning",
+    "STATE: -marker-waste-full-error",
+    "STATE: -output-tray-missing-error",
+    "STATE: -other-error"
+   ]
+  },
+  {
+   "name": "ink_detection_off",
+   "origin": "synthetic",
+   "note": "SYNTHETIC: ink level detection released (CTK SETZ, CIR UK)",
+   "xml": "cases/ink_detection_off.xml",
+   "xml_status_element": "idle",
+   "bscc": "BST:00;PID:00,00,00;CHD:CLM,BKM;LVR:GAL,AT;MID:XXXXXX;CTK:CL,SETZ,/,BK,SETZ;CIR:CL=UK,BK=UK;DJS:NO;DBS:NO;DWS:NO;DOC:4,00,NO;DSC:NO;FSI:00;HRI:EU;HCF:AL;MSI:DAT,E3,HASF;PDR:4;HRC:NO;",
+   "decoded": {
+    "region": "EU",
+    "bst": "00",
+    "busy_state": "NO",
+    "job_state": "NO",
+    "cartridges": [
+     "CLM",
+     "BKM"
+    ],
+    "ink": [
+     {
+      "color": "CL",
+      "fill": "UK",
+      "tank": "SETZ"
+     },
+     {
+      "color": "BK",
+      "fill": "UK",
+      "tank": "SETZ"
+     }
+    ],
+    "warnings": [
+     "NO"
+    ],
+    "operator_calls": [
+     "NO"
+    ],
+    "service_call": "NO"
+   },
+   "report": {
+    "activity": "idle",
+    "levels": [
+     -1,
+     -1
+    ],
+    "names": [
+     "Black PG-510",
+     "Tri-colour CL-511"
+    ],
+    "reasons": [],
+    "message": ""
+   },
+   "attr": "ATTR: marker-colors=#000000,#00AEEF marker-high-levels=100,100 marker-levels=-1,-1 marker-low-levels=10,10 marker-message=\"\" marker-names=\"Black PG-510,Tri-colour CL-511\" marker-types=ink,ink",
+   "state": [
+    "STATE: -marker-supply-low-warning",
+    "STATE: -marker-supply-empty-error",
+    "STATE: -media-empty-error",
+    "STATE: -cover-open-error",
+    "STATE: -media-jam-error",
+    "STATE: -marker-waste-almost-full-warning",
+    "STATE: -marker-waste-full-error",
+    "STATE: -output-tray-missing-error",
+    "STATE: -other-error"
+   ]
+  },
+  {
+   "name": "high_capacity_eu",
+   "origin": "synthetic",
+   "note": "SYNTHETIC: high capacity cartridges (CHD CL,BK instead of CLM,BKM)",
+   "xml": "cases/high_capacity_eu.xml",
+   "xml_status_element": "idle",
+   "bscc": "BST:00;PID:00,00,00;CHD:CL,BK;LVR:GAL,AT;MID:XXXXXX;CTK:CL,SET,/,BK,SET;CIR:CL=100,BK=070;DJS:NO;DBS:NO;DWS:NO;DOC:4,00,NO;DSC:NO;FSI:00;HRI:EU;HCF:AL;MSI:DAT,E3,HASF;PDR:4;HRC:NO;",
+   "decoded": {
+    "region": "EU",
+    "bst": "00",
+    "busy_state": "NO",
+    "job_state": "NO",
+    "cartridges": [
+     "CL",
+     "BK"
+    ],
+    "ink": [
+     {
+      "color": "CL",
+      "fill": "100",
+      "tank": "SET"
+     },
+     {
+      "color": "BK",
+      "fill": "070",
+      "tank": "SET"
+     }
+    ],
+    "warnings": [
+     "NO"
+    ],
+    "operator_calls": [
+     "NO"
+    ],
+    "service_call": "NO"
+   },
+   "report": {
+    "activity": "idle",
+    "levels": [
+     70,
+     100
+    ],
+    "names": [
+     "Black PG-512",
+     "Tri-colour CL-513"
+    ],
+    "reasons": [],
+    "message": ""
+   },
+   "attr": "ATTR: marker-colors=#000000,#00AEEF marker-high-levels=100,100 marker-levels=70,100 marker-low-levels=10,10 marker-message=\"\" marker-names=\"Black PG-512,Tri-colour CL-513\" marker-types=ink,ink",
+   "state": [
+    "STATE: -marker-supply-low-warning",
+    "STATE: -marker-supply-empty-error",
+    "STATE: -media-empty-error",
+    "STATE: -cover-open-error",
+    "STATE: -media-jam-error",
+    "STATE: -marker-waste-almost-full-warning",
+    "STATE: -marker-waste-full-error",
+    "STATE: -output-tray-missing-error",
+    "STATE: -other-error"
+   ]
+  }
+ ]
+}

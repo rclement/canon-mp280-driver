@@ -1,0 +1,36 @@
+Canon MP280 CUPS driver - licensing notice
+
+This project is an independent implementation of a CUPS driver for the Canon
+PIXMA MP280. It is not affiliated with or endorsed by Canon Inc. "Canon" and
+"PIXMA" are trademarks of their owner.
+
+Two licences apply:
+
+1. The contents of this repository are licensed under the GNU General Public
+   License, version 2 only (see LICENSE). Parts of it were written with reference
+   to the GPLv2-only source Canon published for its cnijfilter 3.40 driver, which
+   is why this project is GPLv2 only and not "or later".
+
+2. The driver reads three data files published by Canon (cnb_3700.tbl,
+   cnbpname370.tbl, cifmp280.conf). They are Canon's proprietary property and are
+   NOT part of this repository: scripts/fetch-canon-data.sh downloads them,
+   unmodified, from Canon's cnijfilter 3.40 source archive together with Canon's
+   licence texts (LICENSE-cnijfilter-3.40*.txt). Their use is governed by that
+   licence (use and distribution solely for use with Canon's inkjet printers,
+   under the same terms, no sublicensing or selling, copyright notices intact).
+   They are separate files, read at run time and never compiled into the
+   programs, and should be kept that way, including in binary packages.
+
+
+How this driver was made
+------------------------
+
+This is not a clean-room implementation. The behaviour of Canon's cnijfilter
+3.40 driver (its published GPLv2 source and its binary modules) was analysed with
+reverse-engineering tools by an AI coding assistant (Anthropic Claude Code),
+and that analysis was then ported to Go. The port was validated by comparing
+its output byte for byte with the output of Canon's driver. The code therefore
+derives from Canon's driver and reproduces its behaviour, including its
+quirks (docs/KNOWN-QUIRKS.md). Canon's licence restricts reverse engineering of
+its binary modules; anyone using or redistributing this project should form
+their own view of that point.

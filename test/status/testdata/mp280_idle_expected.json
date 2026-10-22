@@ -1,0 +1,18 @@
+{
+  "region": "EU",
+  "bst": 0,
+  "printing": false,
+  "busy": false,
+  "operator_call": false,
+  "busy_state": "NO",
+  "job_state": "NO",
+  "cartridges": ["CLM", "BKM"],
+  "ink": [
+    {"color": "CL", "level": 100, "level_raw": "100", "tank": "SET"},
+    {"color": "BK", "level": 100, "level_raw": "100", "tank": "SET"}
+  ],
+  "warnings": [{"code": "NO", "meaning": "none"}],
+  "operator_calls": [{"code": "NO", "meaning": "none"}],
+  "service_call": "NO",
+  "raw": "BST:00;PID:00,00,00;CHD:CLM,BKM;LVR:GAL,AT;MID:XXXXXX;CTK:CL,SET,/,BK,SET;CIR:CL=100,BK=100;DJS:NO;DBS:NO;DWS:NO;DOC:4,00,NO;DSC:NO;FSI:00;HRI:EU;HCF:AL;MSI:DAT,E3,HASF;PDR:4;HRC:NO;"
+}

@@ -1,0 +1,4 @@
+# Canon PIXMA MP280 (04a9:1746): let the CUPS user (group lp) and the active
+# desktop user talk to the printer through usbfs, which the status backend and
+# CUPS' stock usb backend need.
+SUBSYSTEM=="usb", ATTR{idVendor}=="04a9", ATTR{idProduct}=="1746", MODE="0660", GROUP="lp", TAG+="uaccess"

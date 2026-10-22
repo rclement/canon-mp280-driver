@@ -1,0 +1,11 @@
+[Unit]
+Description=Refresh ink levels and state of CUPS queue %i (Canon MP280)
+Documentation=man:lp(1)
+After=cups.service
+
+[Service]
+Type=oneshot
+# A probe job only queries the printer (title canon-status-probe: no data is
+# sent). It is submitted only when the queue is idle, so it never delays a print.
+ExecCondition=/bin/sh -c 'lpstat -p "%i" 2>/dev/null | grep -q "is idle"'
+ExecStart=/bin/sh -c 'echo probe | lp -d "%i" -t canon-status-probe -o raw -o job-sheets=none'

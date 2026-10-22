@@ -1,0 +1,10 @@
+ATTR: marker-colors=#000000,#00AEEF marker-high-levels=100,100 marker-levels=100,70 marker-low-levels=10,10 marker-message="Paper jam" marker-names="Black PG-510,Tri-colour CL-511" marker-types=ink,ink
+STATE: +media-jam-error
+STATE: -marker-supply-low-warning
+STATE: -marker-supply-empty-error
+STATE: -media-empty-error
+STATE: -cover-open-error
+STATE: -marker-waste-almost-full-warning
+STATE: -marker-waste-full-error
+STATE: -output-tray-missing-error
+STATE: -other-error

@@ -1,0 +1,10 @@
+[Unit]
+Description=Periodically refresh ink levels of CUPS queue %i (Canon MP280)
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=15min
+AccuracySec=1min
+
+[Install]
+WantedBy=timers.target
