@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: vet, unit tests, golden suite, e2e
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # The golden filter cases depend on Ghostscript's rasteriser, so run in the
+      # flake's dev shell: flake.lock pins the Ghostscript the fixtures were recorded with.
+      - uses: cachix/install-nix-action@v31
+
+      # Canon's data files are not in the repository; reuse them between runs
+      # (scripts/fetch-canon-data.sh verifies them against data/canon/SHA256SUMS anyway).
+      - uses: actions/cache@v4
+        with:
+          path: |
+            data/canon/*.tbl
+            data/canon/*.conf
+            data/canon/LICENSE-*.txt
+          key: canon-data-${{ hashFiles('data/canon/SHA256SUMS', 'scripts/fetch-canon-data.sh') }}
+
+      # The private-cupsd end-to-end tests use unshare -rm; Ubuntu 24.04 runners
+      # restrict unprivileged user namespaces by default.
+      - name: Allow unprivileged user namespaces
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+
+      - name: make test
+        run: nix develop --command make test
+
+      - name: Build and run the filter e2e
+        run: nix develop --command sh -c 'make && BUILD=build bash test/cupsd/e2e_filter.sh'
+
+  lint-and-cross:
+    name: gofmt and cross-compile
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - name: gofmt
+        run: test -z "$(gofmt -l .)" || { gofmt -l .; exit 1; }
+      - name: Build for amd64, arm64 and riscv64
+        run: make test-cross
