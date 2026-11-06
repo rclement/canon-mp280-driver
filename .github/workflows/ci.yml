@@ -68,7 +68,7 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
-      - run: sudo apt-get update && sudo apt-get install -y qemu-user-static
+      - run: sudo apt-get update && sudo apt-get install -y qemu-user
       - uses: actions/cache@v4
         with:
           path: |
@@ -82,7 +82,7 @@ jobs:
           CGO_ENABLED: "0"
           GOARCH: arm
           GOARM: "6"
-        run: go test -exec qemu-arm-static ./internal/...
+        run: go test -exec qemu-arm ./internal/...
 
   # Build the release tarballs on every push so packaging can't rot between releases.
   package:
