@@ -6,7 +6,7 @@
 // device id request. It needs no cgo and no libusb.
 //
 // The ioctl request numbers and structure layouts are only defined here for
-// amd64, arm64 and riscv64 (64-bit little-endian, generic _IOC encoding);
+// amd64, arm, arm64 and riscv64 (little-endian, generic _IOC encoding, 32 or 64-bit);
 // on every other platform Open fails with ErrUnsupported.
 package usbfs
 
@@ -16,7 +16,7 @@ import (
 )
 
 // ErrUnsupported is returned on platforms the package cannot drive.
-var ErrUnsupported = errors.New("usbfs: unsupported platform (need linux on amd64, arm64 or riscv64)")
+var ErrUnsupported = errors.New("usbfs: unsupported platform (need linux on amd64, arm, arm64 or riscv64)")
 
 // ClassPrinter is the USB interface class of printers.
 const ClassPrinter = 7

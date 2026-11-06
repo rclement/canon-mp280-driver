@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-only
 
-//go:build linux && (amd64 || arm64 || riscv64)
+//go:build linux && (amd64 || arm || arm64 || riscv64)
 
 package usbfs
 
@@ -191,7 +191,7 @@ type ioctlRequest struct {
 	data  unsafe.Pointer
 }
 
-var ioctlViaInterface = ioc(iocRead|iocWrite, usbfsType, 18, 16)
+var ioctlViaInterface = ioc(iocRead|iocWrite, usbfsType, 18, sizeIoctl)
 
 func (p *Printer) claim() error {
 	n := uint32(p.iface.Number)

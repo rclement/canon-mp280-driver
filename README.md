@@ -22,6 +22,12 @@ implementation; see `NOTICE`.
 make && sudo make install
 ```
 
+You can skip the build and install the prebuilt release instead:
+
+```sh
+curl -fsSL https://github.com/rclement/canon-mp280-driver/releases/latest/download/get.sh | sh
+```
+
 Per-distro notes, NixOS, udev and the optional ink-level timer: `docs/INSTALL.md`.
 `make` downloads Canon's printer data files into `data/canon/` (Canon's licence, not the GPL; see `NOTICE`).
 

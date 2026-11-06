@@ -5,13 +5,18 @@ package usbfs
 import "testing"
 
 func TestIOCFormula(t *testing.T) {
-	// Values from <linux/usbdevice_fs.h> on amd64/arm64/riscv64.
+	// Values from <linux/usbdevice_fs.h>: the BULK number embeds the 24-byte
+	// (64-bit) or 16-byte (32-bit ARM) usbdevfs_bulktransfer.
+	bulk := uintptr(0xC0185502)
+	if ptrSize == 4 {
+		bulk = 0xC0105502
+	}
 	for _, tc := range []struct {
 		name string
 		got  uintptr
 		want uintptr
 	}{
-		{"BULK", ioctlBulk, 0xC0185502},
+		{"BULK", ioctlBulk, bulk},
 		{"SETINTERFACE", ioctlSetInterface, 0x80085504},
 		{"CLAIMINTERFACE", ioctlClaimInterface, 0x8004550F},
 		{"RELEASEINTERFACE", ioctlReleaseIface, 0x80045510},

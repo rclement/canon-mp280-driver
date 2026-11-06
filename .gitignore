@@ -3,3 +3,4 @@
 /data/canon/*
 !/data/canon/README
 !/data/canon/SHA256SUMS
+/dist/

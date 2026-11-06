@@ -10,6 +10,26 @@ licence, not the GPL (see `data/canon/README`). With the archive already on disk
 Runtime dependencies on every distro: `cups`, `ghostscript` (`gs`), and
 `cups-filters` (typical, for PDF/PNG/text to PostScript).
 
+## Prebuilt releases
+
+Each tagged release on GitHub carries prebuilt tarballs for `armv6`, `arm64` and `amd64`, plus `SHA256SUMS` and `get.sh`. The tarballs contain only
+this project's files; Canon's data files are downloaded from Canon by the installer (see `data/canon/README`).
+
+```sh
+sudo apt install cups ghostscript cups-filters
+curl -fsSL https://github.com/rclement/canon-mp280-driver/releases/latest/download/get.sh | sh
+```
+
+`get.sh` picks the build for the machine, verifies it against `SHA256SUMS`, then runs the tarball's `install.sh`
+with sudo (which fetches Canon's data, installs everything under `/usr`, reloads udev and restarts CUPS).
+`VERSION=v0.1.0` installs a specific release. To inspect first, download `get.sh` and read it, or download
+`canon-mp280-driver-linux-armv6.tar.gz` from the release page, unpack it and run `sudo ./install.sh`
+(`sudo ./install.sh --uninstall` removes it again; `CANON_TARBALL=` works as for `make`).
+
+Then add the printer as described below. Releases are cut by pushing a `vX.Y.Z` tag; `make dist` builds the same
+tarballs locally into `./dist`. (GitHub Actions artifacts need a GitHub login to download even on a public
+repository, which is why releases are used.)
+
 ## Any Linux (Debian/Ubuntu, Fedora/RHEL, Arch, openSUSE, Alpine...)
 
 ```sh
@@ -35,7 +55,7 @@ Debian/Ubuntu/Alpine, `/usr/libexec/cups` on Fedora/Arch); override with
 Canon's data files and licence texts go to `$PREFIX/share/canon-mp280/tables` and `$PREFIX/share/doc/canon-mp280`. The tables directory is also baked into the binaries as the
 default; `MP280_TABLE_DIR` overrides it.
 
-Add the printer: pick **Canon MP280 series (mp280usb)** as the device and
+Add the printer (also after a prebuilt install): pick **Canon MP280 series (mp280usb)** as the device and
 `canonmp280-oss.ppd` as the driver (GNOME Settings, `lpadmin`, or the CUPS web UI).
 
 ### Optional: refresh ink levels while idle
@@ -77,8 +97,7 @@ Test without a boot entry: `sudo nixos-rebuild test`.
 
 ## Architectures
 
-amd64, arm64 and riscv64 (the usbfs ioctl layout is checked per architecture);
-`make test-cross` verifies they compile.
+amd64, arm, arm64 and riscv64 (the usbfs ioctl layout is checked per architecture); `make test-cross` verifies they compile.
 
 ## Removal
 

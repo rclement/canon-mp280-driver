@@ -5,6 +5,7 @@
 #   make fetch                only download and verify Canon's data files into data/canon
 #   make test                 vet + unit tests + the golden end-to-end suite
 #   make perf                 600 dpi A4 timing check (run alone)
+#   make dist                 prebuilt release tarballs (armv6, arm64, amd64) in ./dist
 #   sudo make install         install filter, backend, PPD, Canon data tables, udev rule (honours PREFIX and DESTDIR)
 PREFIX          ?= /usr
 DESTDIR         ?=
@@ -31,7 +32,7 @@ CANON_DIR  := data/canon
 CANON_DATA := $(addprefix $(CANON_DIR)/,cnb_3700.tbl cnbpname370.tbl cifmp280.conf)
 
 .DEFAULT_GOAL := all
-.PHONY: all fetch test perf vet test-cross install uninstall clean
+.PHONY: all fetch test perf vet test-cross dist dist-one install uninstall clean
 
 fetch $(CANON_DATA):
 	scripts/fetch-canon-data.sh $(CANON_DIR)
@@ -54,6 +55,37 @@ test-cross:
 	GOARCH=amd64 $(GO) build -o /dev/null ./...
 	GOARCH=arm64 $(GO) build -o /dev/null ./...
 	GOARCH=riscv64 $(GO) build -o /dev/null ./...
+	GOARCH=arm GOARM=6 $(GO) build -o /dev/null ./...
+
+# Prebuilt release tarballs (what the release workflow publishes): our binaries,
+# PPD, udev/systemd files and packaging/install.sh. Canon's data files are NOT
+# included (see NOTICE); the installer downloads them.
+VERSION ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo dev)
+DIST    := dist
+
+dist:
+	rm -rf ./$(DIST)
+	@set -e; for t in armv6:arm:6 arm64:arm64: amd64:amd64:; do \
+		name=$${t%%:*}; rest=$${t#*:}; \
+		$(MAKE) --no-print-directory dist-one DIST_NAME=$$name DIST_GOARCH=$${rest%%:*} DIST_GOARM=$${rest#*:}; \
+	done
+	cd $(DIST) && sha256sum *.tar.gz > SHA256SUMS
+
+dist-one:
+	@set -e; pkg=canon-mp280-driver-linux-$(DIST_NAME); d=$(DIST)/$$pkg; \
+	mkdir -p $$d/bin $$d/ppd $$d/udev $$d/systemd $$d/scripts $$d/data/canon; \
+	GOOS=linux GOARCH=$(DIST_GOARCH) $(if $(DIST_GOARM),GOARM=$(DIST_GOARM)) \
+		$(GO) build -trimpath -ldflags '$(LDFLAGS)' -o $$d/bin/ ./cmd/...; \
+	cp ppd/$(PPD_NAME) $$d/ppd/; \
+	cp packaging/udev/70-canon-mp280.rules $$d/udev/; \
+	cp packaging/systemd/canon-mp280-status@.service packaging/systemd/canon-mp280-status@.timer $$d/systemd/; \
+	cp scripts/fetch-canon-data.sh $$d/scripts/; \
+	cp data/canon/README data/canon/SHA256SUMS $$d/data/canon/; \
+	cp packaging/install.sh $$d/install.sh; \
+	cp LICENSE NOTICE README.md $$d/; \
+	echo "$(VERSION)" > $$d/VERSION; \
+	tar -C $(DIST) --owner=0 --group=0 --numeric-owner --sort=name -czf $(DIST)/$$pkg.tar.gz $$pkg; \
+	rm -r ./$$d; echo "built $(DIST)/$$pkg.tar.gz"
 
 # CUPS wants filters and backends in its serverbin. The status wrapper is
 # installed as `mp280usb` (device URI scheme mp280usb:), mode 0755 so

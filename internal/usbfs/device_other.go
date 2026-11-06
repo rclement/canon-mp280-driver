@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-only
 
-//go:build !(linux && (amd64 || arm64 || riscv64))
+//go:build !(linux && (amd64 || arm || arm64 || riscv64))
 
 package usbfs
 

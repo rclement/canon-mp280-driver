@@ -54,5 +54,53 @@ jobs:
           go-version-file: go.mod
       - name: gofmt
         run: test -z "$(gofmt -l .)" || { gofmt -l .; exit 1; }
-      - name: Build for amd64, arm64 and riscv64
+      - name: Build for amd64, arm (32-bit), arm64 and riscv64
         run: make test-cross
+
+  # ARMv6 32-bit is a supported target: run the package tests as a 32-bit ARM
+  # binary under qemu-user. The golden suite is left to the nix job (its fixtures
+  # depend on the pinned Ghostscript, which is host code).
+  test-armv6:
+    name: unit tests on 32-bit ARM (qemu)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - run: sudo apt-get update && sudo apt-get install -y qemu-user-static
+      - uses: actions/cache@v4
+        with:
+          path: |
+            data/canon/*.tbl
+            data/canon/*.conf
+            data/canon/LICENSE-*.txt
+          key: canon-data-${{ hashFiles('data/canon/SHA256SUMS', 'scripts/fetch-canon-data.sh') }}
+      - run: scripts/fetch-canon-data.sh
+      - name: go test (GOARCH=arm GOARM=6)
+        env:
+          CGO_ENABLED: "0"
+          GOARCH: arm
+          GOARM: "6"
+        run: go test -exec qemu-arm-static ./internal/...
+
+  # Build the release tarballs on every push so packaging can't rot between releases.
+  package:
+    name: release tarballs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - run: make dist
+      - name: Installer smoke test
+        run: |
+          tar -xzf dist/canon-mp280-driver-linux-amd64.tar.gz -C "$RUNNER_TEMP"
+          CUPS_SERVERBIN=/usr/lib/cups CUPS_DATADIR=/usr/share/cups DESTDIR="$RUNNER_TEMP/root" "$RUNNER_TEMP/canon-mp280-driver-linux-amd64/install.sh"
+          test -x "$RUNNER_TEMP/root/usr/lib/cups/filter/mp280-filter"
+          test -s "$RUNNER_TEMP/root/usr/share/canon-mp280/tables/cnb_3700.tbl"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-tarballs
+          path: dist/

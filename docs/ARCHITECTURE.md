@@ -233,7 +233,7 @@ Pure Go over `/dev/bus/usb/BBB/DDD`. Devices are listed from sysfs (nothing is s
 parsed, the printer-class interface with bulk IN/OUT claimed. A bound `usblp` kernel driver is detached with
 `USBDEVFS_DISCONNECT_CLAIM` restricted to `usblp` and re-attached on close; an interface owned by anyone else (a running job)
 gives `ErrBusy` and is never taken over. Bulk reads use whole 512-byte packets; a timeout is `(0, nil)`. Supported: Linux on
-amd64, arm64 and riscv64; elsewhere every call returns `ErrUnsupported`.
+amd64, arm (32-bit, ARMv6+), arm64 and riscv64; elsewhere every call returns `ErrUnsupported`.
 
 ### mp280usb backend
 

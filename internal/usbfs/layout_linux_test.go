@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-only
 
-//go:build linux && (amd64 || arm64 || riscv64)
+//go:build linux && (amd64 || arm || arm64 || riscv64)
 
 package usbfs
 
@@ -18,7 +18,7 @@ func TestStructSizes(t *testing.T) {
 	}{
 		{"usbdevfs_bulktransfer", unsafe.Sizeof(bulkTransfer{}), sizeBulkTransfer},
 		{"usbdevfs_disconnect_claim", unsafe.Sizeof(disconnectClaim{}), sizeDisconnectClaim},
-		{"usbdevfs_ioctl", unsafe.Sizeof(ioctlRequest{}), 16},
+		{"usbdevfs_ioctl", unsafe.Sizeof(ioctlRequest{}), sizeIoctl},
 		{"usbdevfs_setinterface", 2 * unsafe.Sizeof(uint32(0)), sizeSetInterface},
 		{"unsigned int", unsafe.Sizeof(uint32(0)), sizeUint},
 	} {
@@ -26,7 +26,7 @@ func TestStructSizes(t *testing.T) {
 			t.Errorf("%s: Sizeof = %d, want %d", tc.name, tc.got, tc.want)
 		}
 	}
-	if unsafe.Sizeof(uintptr(0)) != 8 {
-		t.Fatal("layout constants assume a 64-bit ABI")
+	if unsafe.Sizeof(uintptr(0)) != ptrSize {
+		t.Fatalf("ptrSize = %d, want %d", ptrSize, unsafe.Sizeof(uintptr(0)))
 	}
 }

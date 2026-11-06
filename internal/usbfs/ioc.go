@@ -2,7 +2,7 @@
 
 package usbfs
 
-// Linux _IOC request encoding of the generic ABI shared by amd64, arm64 and
+// Linux _IOC request encoding of the generic ABI shared by amd64, arm, arm64 and
 // riscv64: 2 direction bits above 14 size bits, 8 type bits and 8 number bits.
 // Architectures with another layout (mips, powerpc, sparc) are deliberately
 // not supported.
@@ -25,10 +25,15 @@ func ioc(dir, typ, nr, size uintptr) uintptr {
 	return dir<<iocDirShift | typ<<iocTypeShift | nr<<iocNRShift | size<<iocSizeShift
 }
 
-// Sizes of the kernel structures on a 64-bit ABI (checked against
-// unsafe.Sizeof of the Go mirrors in the tests).
+// ptrSize is the size of a user pointer: 4 on 32-bit ARM, 8 elsewhere.
+const ptrSize = 4 << (^uintptr(0) >> 63)
+
+// Sizes of the kernel structures (checked against unsafe.Sizeof of the Go
+// mirrors in the tests). Those holding a user pointer depend on the word size:
+// bulk transfer is 3 x u32 + pointer, usbdevfs_ioctl is 2 x i32 + pointer.
 const (
-	sizeBulkTransfer    = 24
+	sizeBulkTransfer    = 8 + 2*ptrSize
+	sizeIoctl           = 8 + ptrSize
 	sizeSetInterface    = 8
 	sizeDisconnectClaim = 264
 	sizeUint            = 4
